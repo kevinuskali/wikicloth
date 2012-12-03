@@ -9,7 +9,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
 	'h1','h2','h3','h4','h5','h6','p','table','tr','td','th','tbody','thead','tfoot', 'iframe']
   ALLOWED_ATTRIBUTES = ['src','id','name','style','class','href','start','value','colspan','align','border',
         'cellpadding','cellspacing','name','valign','color','rowspan','nowrap','title','rel','for','width','height',
-        'frameborder', 'allowfullscreen']
+        'frameborder', 'allowfullscreen', 'allowtransparency']
   ESCAPED_TAGS = [ 'nowiki','pre','code' ]
   SHORT_TAGS = [ 'meta','br','hr']
   NO_NEED_TO_CLOSE = ['li','p'] + SHORT_TAGS
@@ -73,7 +73,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
     when "includeonly"
       return self.in_template? ? self.element_content : ""
     when "nowiki"
-      return self.element_content
+      return self.element_content.gsub!(/\A"|"\Z/, '')  # strip off leading & trailing quotes
     when "a"
       if self.element_attributes['href'] =~ /:\/\//
         return @options[:link_handler].external_link(self.element_attributes['href'], self.element_content)

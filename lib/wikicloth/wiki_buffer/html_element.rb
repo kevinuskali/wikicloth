@@ -59,9 +59,9 @@ class WikiBuffer::HTMLElement < WikiBuffer
       # remove empty first line
       self.element_content = $1 if self.element_content =~ /^\s*\n(.*)$/m
       # escape all html inside this element if not raw
-      if self.element_name != 'raw'
-        self.element_content = self.element_content.gsub('<','&lt;').gsub('>','&gt;')
-      end
+    #  if self.element_name != 'raw'
+    #    self.element_content = self.element_content.gsub('<','&lt;').gsub('>','&gt;')
+    #  end
       # hack to fix <code><nowiki> nested mess
       self.element_content = self.element_content.gsub(/&lt;[\/]*\s*nowiki\s*&gt;/,'')
     end
@@ -75,6 +75,8 @@ class WikiBuffer::HTMLElement < WikiBuffer
     when "includeonly"
       return self.in_template? ? self.element_content : ""
     when "nowiki"
+      return self.element_content
+    when "raw"
       return self.element_content
     when "a"
       if self.element_attributes['href'] =~ /:\/\//
@@ -242,7 +244,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
       end
 
     else
-      if @start_tag == 0 && ESCAPED_TAGS.include?(self.element_name)
+      if @start_tag == 0 && ESCAPED_TAGS.include?(self.element_name) && (self.element_name != 'raw')
         self.data << self.escape_char(current_char)
       else
         self.data << current_char

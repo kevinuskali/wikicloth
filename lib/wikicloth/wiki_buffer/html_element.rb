@@ -73,7 +73,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
     when "includeonly"
       return self.in_template? ? self.element_content : ""
     when "nowiki"
-      return self.element_content.gsub!(/\A"|"\Z/, '')  # strip off leading & trailing quotes
+      return self.element_content
     when "a"
       if self.element_attributes['href'] =~ /:\/\//
         return @options[:link_handler].external_link(self.element_attributes['href'], self.element_content)

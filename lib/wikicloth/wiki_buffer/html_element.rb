@@ -10,7 +10,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
   ALLOWED_ATTRIBUTES = ['src','id','name','style','class','href','start','value','colspan','align','border',
         'cellpadding','cellspacing','name','valign','color','rowspan','nowrap','title','rel','for','width','height',
         'frameborder', 'allowfullscreen', 'allowtransparency']
-  ESCAPED_TAGS = [ 'nowiki','pre','code' ]
+  ESCAPED_TAGS = [ 'nowiki','pre','code','raw' ]
   SHORT_TAGS = [ 'meta','br','hr']
   NO_NEED_TO_CLOSE = ['li','p'] + SHORT_TAGS
   DISABLE_GLOBALS_FOR = ESCAPED_TAGS
@@ -55,7 +55,7 @@ class WikiBuffer::HTMLElement < WikiBuffer
       return "</#{self.element_name}><#{self.element_name}>" if @tag_check == self.element_name
     end
 
-    if ESCAPED_TAGS.include?(self.element_name)
+    if (ESCAPED_TAGS.include?(self.element_name)) and (self.element_name != 'raw')
       # remove empty first line
       self.element_content = $1 if self.element_content =~ /^\s*\n(.*)$/m
       # escape all html inside this element
